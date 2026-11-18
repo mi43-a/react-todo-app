@@ -4,6 +4,7 @@ import type { Todo } from "./types";
 import { initTodos } from "./initTodos";
 import WelcomeMessage from "./WelcomeMessage";
 import TodoList from "./TodoList";
+import CalendarView from "./CalendarView";
 import { v4 as uuid } from "uuid";
 import { twMerge } from "tailwind-merge";
 import dayjs from "dayjs";
@@ -25,7 +26,6 @@ const loadTodos = (): Todo[] => {
   if (todoJsonStr === null) {
     return initTodos;
   }
-
   const storedTodos: StoredTodo[] = JSON.parse(todoJsonStr);
   return storedTodos.map((todo) => ({
     ...todo,
@@ -50,6 +50,7 @@ const App = () => {
 
   const uncompletedCount = todos.filter((todo) => !todo.isDone).length;
   const completedCount = todos.length - uncompletedCount;
+
   const newTodoNameError = getTodoNameError(newTodoName);
   const isNewTodoNameInvalid = newTodoNameError !== "";
   const showNewTodoNameError = isNameTouched && isNewTodoNameInvalid;
@@ -85,6 +86,7 @@ const App = () => {
       priority: newTodoPriority,
       deadline: newTodoDeadline,
     };
+
     setTodos((currentTodos) => [...currentTodos, newTodo]);
     setNewTodoName("");
     setNewTodoPriority(3);
@@ -113,128 +115,145 @@ const App = () => {
   };
 
   return (
-    <div className="mx-4 mt-10 max-w-2xl md:mx-auto">
+    <div className="mx-4 my-10 max-w-5xl md:mx-auto">
       <h1 className="mb-4 text-2xl font-bold">TodoApp</h1>
-      <div className="mb-4">
+      <div className="mb-6">
         <WelcomeMessage
           name="寝屋川タヌキ"
           uncompletedCount={uncompletedCount}
         />
       </div>
-      <TodoList todos={todos} updateIsDone={updateIsDone} remove={remove} />
 
-      <button
-        type="button"
-        onClick={removeCompletedTodos}
-        disabled={completedCount === 0}
-        className={twMerge(
-          "mt-4 cursor-pointer rounded-md px-3 py-1 font-medium",
-          "bg-rose-500 text-white hover:bg-rose-600",
-          "disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-rose-500",
-        )}
-      >
-        完了済みのタスクを削除
-      </button>
-
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          addNewTodo();
-        }}
-        aria-labelledby="newTodoHeading"
-        className="mt-4 space-y-2 rounded-md border border-slate-300 bg-white p-3 drop-shadow"
-      >
-        <h2 id="newTodoHeading" className="text-lg font-bold">
-          新しいタスクの追加
-        </h2>
-
-        <div>
-          <div className="flex items-center space-x-2">
-            <label className="font-bold" htmlFor="newTodoName">
-              名前
-            </label>
-            <input
-              id="newTodoName"
-              name="todoName"
-              type="text"
-              required
-              value={newTodoName}
-              onChange={updateNewTodoName}
-              aria-invalid={showNewTodoNameError}
-              aria-describedby={
-                showNewTodoNameError ? "newTodoNameError" : undefined
-              }
-              className={twMerge(
-                "min-w-0 grow rounded-md border border-gray-300 p-2",
-                showNewTodoNameError && "border-red-500 outline-red-500",
-              )}
-              placeholder="2文字以上、32文字以内で入力してください"
-            />
-          </div>
-          {showNewTodoNameError && (
-            <div
-              id="newTodoNameError"
-              aria-live="polite"
-              className="ml-10 flex items-center space-x-1 text-sm font-medium text-red-500"
-            >
-              <FontAwesomeIcon
-                icon={faTriangleExclamation}
-                className="mr-0.5"
-              />
-              <div>{newTodoNameError}</div>
-            </div>
-          )}
-        </div>
-
-        <fieldset>
-          <legend className="mb-1 font-bold">優先度</legend>
-          <div className="flex gap-5">
-            {[1, 2, 3].map((value) => (
-              <label key={value} className="flex items-center space-x-1">
-                <input
-                  id={`priority-${value}`}
-                  name="priorityGroup"
-                  type="radio"
-                  value={value}
-                  checked={newTodoPriority === value}
-                  onChange={updateNewTodoPriority}
-                />
-                <span>{value}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
-
-        <div className="flex flex-wrap items-center gap-2">
-          <label className="font-bold" htmlFor="deadline">
-            期限
-          </label>
-          <input
-            type="datetime-local"
-            id="deadline"
-            name="deadline"
-            value={
-              newTodoDeadline
-                ? dayjs(newTodoDeadline).format("YYYY-MM-DDTHH:mm:ss")
-                : ""
-            }
-            onChange={updateDeadline}
-            className="max-w-full min-w-0 rounded-md border border-gray-300 px-2 py-0.5"
+      {/* ★ 同時表示のための2カラムグリッドレイアウト */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        {/* 左側カラム: Todoリスト & タスク追加フォーム */}
+        <div className="space-y-4">
+          <h2 className="text-xl font-bold text-slate-700">Todoリスト</h2>
+          <TodoList
+            todos={todos}
+            updateIsDone={updateIsDone}
+            remove={remove}
           />
+          <button
+            type="button"
+            onClick={removeCompletedTodos}
+            disabled={completedCount === 0}
+            className={twMerge(
+              "mt-2 cursor-pointer rounded-md px-3 py-1 font-medium",
+              "bg-rose-500 text-white hover:bg-rose-600",
+              "disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-rose-500",
+            )}
+          >
+            完了済みのタスクを削除
+          </button>
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              addNewTodo();
+            }}
+            aria-labelledby="newTodoHeading"
+            className="mt-6 space-y-3 rounded-md border border-slate-300 bg-white p-4 drop-shadow"
+          >
+            <h3 id="newTodoHeading" className="text-lg font-bold">
+              新しいタスクの追加
+            </h3>
+
+            <div>
+              <div className="flex items-center space-x-2">
+                <label className="font-bold" htmlFor="newTodoName">
+                  名前
+                </label>
+                <input
+                  id="newTodoName"
+                  name="todoName"
+                  type="text"
+                  required
+                  value={newTodoName}
+                  onChange={updateNewTodoName}
+                  aria-invalid={showNewTodoNameError}
+                  aria-describedby={
+                    showNewTodoNameError ? "newTodoNameError" : undefined
+                  }
+                  className={twMerge(
+                    "min-w-0 grow rounded-md border border-gray-300 p-2",
+                    showNewTodoNameError && "border-red-500 outline-red-500",
+                  )}
+                  placeholder="2文字以上、32文字以内で入力してください"
+                />
+              </div>
+              {showNewTodoNameError && (
+                <div
+                  id="newTodoNameError"
+                  aria-live="polite"
+                  className="ml-10 flex items-center space-x-1 text-sm font-medium text-red-500"
+                >
+                  <FontAwesomeIcon
+                    icon={faTriangleExclamation}
+                    className="mr-0.5"
+                  />
+                  <div>{newTodoNameError}</div>
+                </div>
+              )}
+            </div>
+
+            <fieldset>
+              <legend className="mb-1 font-bold">優先度</legend>
+              <div className="flex gap-5">
+                {[3-5].map((value) => (
+                  <label key={value} className="flex items-center space-x-1 cursor-pointer">
+                    <input
+                      id={`priority-${value}`}
+                      name="priorityGroup"
+                      type="radio"
+                      value={value}
+                      checked={newTodoPriority === value}
+                      onChange={updateNewTodoPriority}
+                    />
+                    <span>{value}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <label className="font-bold" htmlFor="deadline">
+                期限
+              </label>
+              <input
+                type="datetime-local"
+                id="deadline"
+                name="deadline"
+                value={
+                  newTodoDeadline
+                    ? dayjs(newTodoDeadline).format("YYYY-MM-DDTHH:mm:ss")
+                    : ""
+                }
+                onChange={updateDeadline}
+                className="max-w-full min-w-0 rounded-md border border-gray-300 px-2 py-0.5"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={isNewTodoNameInvalid}
+              className={twMerge(
+                "cursor-pointer rounded-md px-3 py-1",
+                "bg-indigo-500 font-bold text-white hover:bg-indigo-600",
+                "disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-indigo-500",
+              )}
+            >
+              追加
+            </button>
+          </form>
         </div>
 
-        <button
-          type="submit"
-          disabled={isNewTodoNameInvalid}
-          className={twMerge(
-            "cursor-pointer rounded-md px-3 py-1",
-            "bg-indigo-500 font-bold text-white hover:bg-indigo-600",
-            "disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-indigo-500",
-          )}
-        >
-          追加
-        </button>
-      </form>
+        {/* 右側カラム: カレンダー表示 */}
+        <div>
+          <h2 className="mb-4 text-xl font-bold text-slate-700">カレンダー</h2>
+          <CalendarView todos={todos} />
+        </div>
+      </div>
     </div>
   );
 };
