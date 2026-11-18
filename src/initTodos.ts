@@ -22,7 +22,7 @@ export const initTodos: Todo[] = [
   },
   {
     id: uuid(),
-    name: "体育のレポート提出",
+    name: "体育レポート提出",
     isDone: true,
     priority: 2,
     deadline: null, // このTodoには期限を設定しない
