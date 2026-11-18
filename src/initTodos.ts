@@ -5,6 +5,7 @@ export const initTodos: Todo[] = [
   {
     id: uuid(), // UUID v4 を生成してIDにセット
     name: "プログラミング3の課題1",
+    description: "GitHubへPush",
     isDone: false,
     priority: 1,
     deadline: new Date(2026, 11, 2, 17, 30),
@@ -13,6 +14,7 @@ export const initTodos: Todo[] = [
   {
     id: uuid(),
     name: "買い物",
+    description: "イオンでグミを買う",
     isDone: false,
     priority: 3,
     deadline: new Date(2026, 11, 20, 10, 30), 
