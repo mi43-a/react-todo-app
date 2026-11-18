@@ -124,9 +124,8 @@ const App = () => {
         />
       </div>
 
-      {/* ★ 同時表示のための2カラムグリッドレイアウト */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* 左側カラム: Todoリスト & タスク追加フォーム */}
+        {/* 左側カラム: Todoリスト & 追加フォーム */}
         <div className="space-y-4">
           <h2 className="text-xl font-bold text-slate-700">Todoリスト</h2>
           <TodoList
@@ -200,7 +199,7 @@ const App = () => {
             <fieldset>
               <legend className="mb-1 font-bold">優先度</legend>
               <div className="flex gap-5">
-                {[3-5].map((value) => (
+                {[1, 2, 3].map((value) => (
                   <label key={value} className="flex items-center space-x-1 cursor-pointer">
                     <input
                       id={`priority-${value}`}

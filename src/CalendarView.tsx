@@ -9,25 +9,20 @@ type Props = {
 };
 
 const CalendarView = ({ todos }: Props) => {
-  // 表示対象の年月を管理するState
   const [currentDate, setCurrentDate] = useState(dayjs());
 
-  // 前月・次月への移動処理
   const prevMonth = () => setCurrentDate(currentDate.subtract(1, "month"));
   const nextMonth = () => setCurrentDate(currentDate.add(1, "month"));
 
-  // カレンダーの日付計算
   const startOfMonth = currentDate.startOf("month");
   const daysInMonth = currentDate.daysInMonth();
-  const startDayOfWeek = startOfMonth.day(); // 0(日) ～ 6(土)
+  const startDayOfWeek = startOfMonth.day();
 
-  // 当月のマス目配列（先頭の空白マス + 日付マス）
   const daysArray = [
     ...Array(startDayOfWeek).fill(null),
     ...Array.from({ length: daysInMonth }, (_, i) => startOfMonth.add(i, "day")),
   ];
 
-  // 特定の日付に対応するTodoを抽出
   const getTodosForDate = (date: dayjs.Dayjs) => {
     return todos.filter((todo) => {
       if (!todo.deadline) return false;
@@ -37,7 +32,6 @@ const CalendarView = ({ todos }: Props) => {
 
   return (
     <div className="rounded-md border border-slate-300 bg-white p-4 drop-shadow">
-      {/* カレンダーヘッダー（年月 ＆ 移動ボタン） */}
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-xl font-bold text-slate-700">
           {currentDate.format("YYYY年 MM月")}
@@ -62,7 +56,6 @@ const CalendarView = ({ todos }: Props) => {
         </div>
       </div>
 
-      {/* 曜日ラベル */}
       <div className="mb-1 grid grid-cols-7 text-center font-bold text-slate-600">
         <div className="text-rose-500">日</div>
         <div>月</div>
@@ -73,7 +66,6 @@ const CalendarView = ({ todos }: Props) => {
         <div className="text-sky-500">土</div>
       </div>
 
-      {/* 日付グリッド */}
       <div className="grid grid-cols-7 gap-1">
         {daysArray.map((date, index) => {
           if (!date) {
