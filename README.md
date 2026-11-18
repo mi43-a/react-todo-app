@@ -54,7 +54,7 @@ https://mi43-a.github.io/react-todo-app/
 
 ---
 
-## 🛠️ 使用技術（技術スタック）
+## 🛠️ 技術スタック・主要ライブラリ
 
 - **フロントエンド**: React 19, TypeScript
 - **ビルドツール**: Vite
