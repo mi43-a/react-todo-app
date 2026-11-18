@@ -56,9 +56,9 @@ https://mi43-a.github.io/react-todo-app/
 
 ## 🛠️ 技術スタック・主要ライブラリ
 
-- **フロントエンド**: React 19, TypeScript
+- **フロントエンド**: React, TypeScript
 - **ビルドツール**: Vite
-- **スタイリング**: Tailwind CSS (v4)
+- **スタイリング**: Tailwind CSS
 - **ライブラリ**: 
   - `dayjs` (日時フォーマット・カレンダー計算)
   - `font-awesome` (UIアイコン)
