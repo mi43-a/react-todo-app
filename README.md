@@ -1,6 +1,10 @@
 # TodoApp
 
-React、TypeScript、Tailwind CSS を使用し、ローカルストレージでデータを永続化した「Todoアプリ」です。
+eact、TypeScript、Tailwind CSS を使用し、タスク一覧とカレンダーを同時に確認できる学習・生活管理向け Todo アプリです。データの永続化（LocalStorage）に対応しています。
+
+■ デプロイ（公開URL）: https://<あなたのGitHubユーザー名>.github.io/react-todo-app/
+
+---
 
 ## 開発履歴
 
