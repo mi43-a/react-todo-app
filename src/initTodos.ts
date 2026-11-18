@@ -7,15 +7,23 @@ export const initTodos: Todo[] = [
     name: "プログラミング3の課題1",
     isDone: false,
     priority: 1,
-    deadline: new Date(2026, 10, 2, 17, 30),
+    deadline: new Date(2026, 11, 2, 17, 30),
     category: "school",
   },
   {
     id: uuid(),
     name: "買い物",
-    isDone: true,
+    isDone: false,
     priority: 3,
-    deadline: null, // このTodoには期限を設定しない
+    deadline: new Date(2026, 11, 20, 10, 30), 
     category: "private",
+  },
+  {
+    id: uuid(),
+    name: "体育のレポート提出",
+    isDone: true,
+    priority: 2,
+    deadline: null, // このTodoには期限を設定しない
+    category: "school",
   },
 ];
