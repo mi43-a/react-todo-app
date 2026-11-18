@@ -1,7 +1,7 @@
 import type { Todo } from "./types";
 import dayjs from "dayjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClock, faPersonDigging } from "@fortawesome/free-solid-svg-icons";
+import { faClock } from "@fortawesome/free-solid-svg-icons";
 import { twMerge } from "tailwind-merge";
 
 type Props = {
@@ -23,11 +23,17 @@ const TodoItem = (props: Props) => {
   const todo = props.todo;
 
   return (
-    <div className="flex items-center justify-between gap-3 rounded-md border border-slate-300 bg-white px-4 py-2 drop-shadow">
+    <div
+      className={twMerge(
+        "flex items-center justify-between gap-3 rounded-md border bg-white px-4 py-2 drop-shadow",
+        // ★ 分類に応じて外枠の色を変更（学校: 青, プライベート: ピンク）
+        todo.category === "school" ? "border-blue-400" : "border-pink-400"
+      )}
+    >
       <div
         className={twMerge(
           "flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1",
-          todo.isDone && "opacity-60",
+          todo.isDone && "opacity-60"
         )}
       >
         <label className="flex min-w-0 cursor-pointer items-center">
@@ -37,14 +43,20 @@ const TodoItem = (props: Props) => {
             onChange={(e) => props.updateIsDone(todo.id, e.target.checked)}
             className="mr-3 shrink-0 cursor-pointer"
           />
-          <FontAwesomeIcon
-            icon={faPersonDigging}
-            className="mr-2 shrink-0 text-slate-500"
-          />
+          {/* ★ 人のアイコンから「学校(🏫) / プライベート(🌸)」の絵文字に変更 */}
+          <span className="mr-2 shrink-0 text-base">
+            {todo.category === "school" ? "🏫" : "🌸"}
+          </span>
           <span className="min-w-0 text-lg font-medium wrap-anywhere text-slate-700">
             {todo.name}
           </span>
         </label>
+        {/* ★ 詳細（メモ）があれば表示 */}
+        {todo.description && (
+          <span className="text-sm text-slate-500">
+            {todo.description}
+          </span>
+        )}
         <span
           aria-label={`優先度: ${todo.priority}`}
           className="tracking-tighter text-orange-400"
@@ -69,7 +81,7 @@ const TodoItem = (props: Props) => {
         aria-label={`${todo.name}を削除`}
         className={twMerge(
           "shrink-0 cursor-pointer rounded-md px-2 py-1 text-sm font-bold",
-          "bg-rose-300 text-white hover:bg-rose-500",
+          "bg-rose-300 text-white hover:bg-rose-500"
         )}
       >
         削除

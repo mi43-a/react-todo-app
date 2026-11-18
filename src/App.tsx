@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import type { ChangeEvent } from "react";
-import type { Todo } from "./types";
+import type { Todo, TodoCategory } from "./types";
 import { initTodos } from "./initTodos";
 import WelcomeMessage from "./WelcomeMessage";
 import TodoList from "./TodoList";
@@ -19,17 +19,20 @@ type StoredTodo = {
   isDone: boolean;
   priority: number;
   deadline: string | null;
+  description?: string;
+  category?: TodoCategory;
 };
 
 const loadTodos = (): Todo[] => {
   const todoJsonStr = localStorage.getItem(localStorageKey);
   if (todoJsonStr === null) {
-    return initTodos;
+    return initTodos.map((t) => ({ ...t, category: t.category || "school" }));
   }
   const storedTodos: StoredTodo[] = JSON.parse(todoJsonStr);
   return storedTodos.map((todo) => ({
     ...todo,
     deadline: todo.deadline === null ? null : new Date(todo.deadline),
+    category: todo.category || "school",
   }));
 };
 
@@ -44,7 +47,9 @@ const getTodoNameError = (name: string): string => {
 const App = () => {
   const [todos, setTodos] = useState<Todo[]>(loadTodos);
   const [newTodoName, setNewTodoName] = useState("");
+  const [newTodoDescription, setNewTodoDescription] = useState("");
   const [newTodoPriority, setNewTodoPriority] = useState(3);
+  const [newTodoCategory, setNewTodoCategory] = useState<TodoCategory>("school");
   const [newTodoDeadline, setNewTodoDeadline] = useState<Date | null>(null);
   const [isNameTouched, setIsNameTouched] = useState(false);
 
@@ -64,8 +69,16 @@ const App = () => {
     setIsNameTouched(true);
   };
 
+  const updateNewTodoDescription = (e: ChangeEvent<HTMLInputElement>) => {
+    setNewTodoDescription(e.target.value);
+  };
+
   const updateNewTodoPriority = (e: ChangeEvent<HTMLInputElement>) => {
     setNewTodoPriority(Number(e.target.value));
+  };
+
+  const updateNewTodoCategory = (e: ChangeEvent<HTMLInputElement>) => {
+    setNewTodoCategory(e.target.value as TodoCategory);
   };
 
   const updateDeadline = (e: ChangeEvent<HTMLInputElement>) => {
@@ -82,14 +95,18 @@ const App = () => {
     const newTodo: Todo = {
       id: uuid(),
       name: newTodoName.trim(),
+      description: newTodoDescription.trim(),
       isDone: false,
       priority: newTodoPriority,
       deadline: newTodoDeadline,
+      category: newTodoCategory,
     };
 
     setTodos((currentTodos) => [...currentTodos, newTodo]);
     setNewTodoName("");
     setNewTodoPriority(3);
+    setNewTodoDescription("");
+    setNewTodoCategory("school");
     setNewTodoDeadline(null);
     setIsNameTouched(false);
   };
@@ -196,22 +213,86 @@ const App = () => {
               )}
             </div>
 
+            <div className="flex items-center space-x-2">
+              <label className="font-bold w-16 shrink-0" htmlFor="newTodoDescription">
+                詳細
+              </label>
+              <input
+                id="newTodoDescription"
+                name="todoDescription"
+                type="text"
+                value={newTodoDescription}
+                onChange={updateNewTodoDescription}
+                placeholder="Todoの詳細（任意）"
+                className="min-w-0 grow rounded-md border border-gray-300 p-2 text-sm"
+              />
+            </div>
+
             <fieldset>
               <legend className="mb-1 font-bold">優先度</legend>
               <div className="flex gap-5">
-                {[1, 2, 3].map((value) => (
-                  <label key={value} className="flex items-center space-x-1 cursor-pointer">
+                  <label  className="flex items-center space-x-1 cursor-pointer">
                     <input
-                      id={`priority-${value}`}
+                      id="priority-1" 
                       name="priorityGroup"
                       type="radio"
-                      value={value}
-                      checked={newTodoPriority === value}
+                      value={1}
+                      checked={newTodoPriority === 1}
                       onChange={updateNewTodoPriority}
                     />
-                    <span>{value}</span>
+                    <span className="font-bold text-orange-400">★★★</span>
                   </label>
-                ))}
+
+                  <label className="flex items-center space-x-1 cursor-pointer">
+                    <input
+                      id="priority-2"
+                      name="priorityGroup"
+                      type="radio"
+                      value={2}
+                      checked={newTodoPriority === 2}
+                      onChange={updateNewTodoPriority}
+                    />
+                    <span className="font-bold text-orange-400">★★</span>
+                  </label>
+
+                  <label className="flex items-center space-x-1 cursor-pointer">
+                    <input
+                      id="priority-3"
+                      name="priorityGroup"
+                      type="radio"
+                      value={3}
+                      checked={newTodoPriority === 3}
+                      onChange={updateNewTodoPriority}
+                    />
+
+                    <span className="font-bold text-orange-400">★</span>
+                  </label> 
+              </div>
+            </fieldset>
+
+            <fieldset className="flex items-center space-x-2">
+              <legend className="font-bold w-16 shrink-0">分類</legend>
+              <div className="flex gap-5">
+                <label className="flex items-center space-x-1 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="categoryGroup"
+                    value="school"
+                    checked={newTodoCategory === "school"}
+                    onChange={updateNewTodoCategory}
+                  />
+                  <span className="font-medium text-blue-600">🏫 学校</span>
+                </label>
+                <label className="flex items-center space-x-1 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="categoryGroup"
+                    value="private"
+                    checked={newTodoCategory === "private"}
+                    onChange={updateNewTodoCategory}
+                  />
+                  <span className="font-medium text-pink-600">🌸 プライベート</span>
+                </label>
               </div>
             </fieldset>
 
