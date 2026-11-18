@@ -101,7 +101,9 @@ const CalendarView = ({ todos }: Props) => {
                     className={`truncate rounded px-1 py-0.5 text-xs font-medium ${
                       todo.isDone
                         ? "bg-slate-200 text-slate-500 line-through opacity-70"
-                        : "bg-indigo-100 text-indigo-800"
+                        : todo.category === "private"
+                        ? "bg-pink-100 text-pink-800" 
+                        : "bg-blue-100 text-blue-800"
                     }`}
                     title={todo.name}
                   >

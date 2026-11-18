@@ -51,18 +51,18 @@ const TodoItem = (props: Props) => {
             {todo.name}
           </span>
         </label>
-        {/* ★ 詳細（メモ）があれば表示 */}
-        {todo.description && (
-          <span className="text-sm text-slate-500">
-            {todo.description}
-          </span>
-        )}
         <span
           aria-label={`優先度: ${todo.priority}`}
           className="tracking-tighter text-orange-400"
         >
           {num2star(todo.priority)}
         </span>
+        {/* ★ 詳細（メモ）があれば表示 */}
+        {todo.description && (
+          <span className="text-sm text-slate-500">
+            {todo.description}
+          </span>
+        )}
         {todo.deadline && (
           <span className="flex items-center text-sm text-slate-500">
             <FontAwesomeIcon icon={faClock} className="mr-0.5" />
