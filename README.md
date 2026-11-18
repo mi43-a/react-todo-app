@@ -23,6 +23,7 @@ https://mi43-a.github.io/react-todo-app/
 | Todoリスト | 新しいタスクの追加 | カレンダー |
 | :---: | :---: | :---: |
 | ![Todoリスト](images/TodoList.png) | ![新しいタスクの追加](images/TodoAdd.png) | ![カレンダー](images/Calendar.png) |
+
 ---
 
 ## 🌟 アプリのコンセプト・開発背景
